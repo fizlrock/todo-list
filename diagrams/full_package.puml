@@ -1,0 +1,185 @@
+@startuml
+!pragma useIntermediatePackages false
+
+class "App" as dev.fizlrock.todo.App {
+  + {static}void main(String[])
+}
+class "DeleteCompletedTasksRq" as dev.fizlrock.todo.domain.dto.DeleteCompletedTasksRq {
+  +String projectId()
+}
+class "ProjectCreateRq" as dev.fizlrock.todo.domain.dto.ProjectCreateRq {
+  +String name()
+  +String description()
+  +LocalDate startTime()
+  +LocalDate endTime()
+}
+class "ProjectDeleteRq" as dev.fizlrock.todo.domain.dto.ProjectDeleteRq {
+  +String projectId()
+}
+class "ProjectFilterRq" as dev.fizlrock.todo.domain.dto.ProjectFilterRq {
+  +Long skip()
+  +Long limit()
+  +String name()
+  +LocalDate start()
+  +LocalDate end()
+}
+class "ProjectGetRq" as dev.fizlrock.todo.domain.dto.ProjectGetRq {
+  +String projectId()
+}
+class "ProjectListResp" as dev.fizlrock.todo.domain.dto.ProjectListResp {
+  +List<ProjectMsg> projects()
+}
+class "ProjectMsg" as dev.fizlrock.todo.domain.dto.ProjectMsg {
+  +String id()
+  +String name()
+  +String description()
+  +LocalDate startDate()
+  +LocalDate endDate()
+}
+class "ProjectUpdateRq" as dev.fizlrock.todo.domain.dto.ProjectUpdateRq {
+  +String id()
+  +ProjectCreateRq project()
+}
+class "TaskCreateRq" as dev.fizlrock.todo.domain.dto.TaskCreateRq {
+  +String projectId()
+  +TaskNewMsg task()
+}
+class "TaskListResp" as dev.fizlrock.todo.domain.dto.TaskListResp {
+  +List<TaskMsg> tasks()
+}
+class "TaskMsg" as dev.fizlrock.todo.domain.dto.TaskMsg {
+  +String id()
+  +String name()
+  +boolean completed()
+  +LocalDate date()
+}
+class "TaskNewMsg" as dev.fizlrock.todo.domain.dto.TaskNewMsg {
+  +String name()
+  +String description()
+  +boolean completed()
+  +LocalDate date()
+}
+class "TaskRq" as dev.fizlrock.todo.domain.dto.TaskRq {
+  +String projectId()
+  +String taskId()
+}
+class "TaskUpdateRq" as dev.fizlrock.todo.domain.dto.TaskUpdateRq {
+  +String projectId()
+  +String taskId()
+  +TaskNewMsg task()
+}
+class "TasksInProjectRq" as dev.fizlrock.todo.domain.dto.TasksInProjectRq {
+  +String projectId()
+}
+entity "Project" as dev.fizlrock.todo.domain.entity.Project {
+  + {static}Project createNewProject(String, String, LocalDate, LocalDate)
+  +UUID getId()
+  +String getName()
+  +String getDescription()
+  +LocalDate getStartDate()
+  +LocalDate getEndDate()
+  +Task addTask(String, LocalDate)
+  +Task removeTask(UUID)
+  +Task updateTask(UUID, String, LocalDate, boolean)
+  +Collection<Task> getTasks()
+  +void setName(String)
+  +void setDescription(String)
+  +void setDates(LocalDate, LocalDate)
+}
+entity "Task" as dev.fizlrock.todo.domain.entity.Task {
+  +void makeCompleted()
+  +void makeUncompleted()
+  +void setCompleted(boolean)
+  +boolean isCompleted()
+  +void setName(String)
+  +void setFinishDate(LocalDate)
+  +UUID getId()
+  +UUID getProjectId()
+  +String getName()
+  +LocalDate getFinishDate()
+}
+interface "IMapProject" as dev.fizlrock.todo.domain.mapper.IMapProject {
+  + {abstract}ProjectMsg toDto(Project)
+}
+class "IMapProjectImpl" as dev.fizlrock.todo.domain.mapper.IMapProjectImpl {
+  +ProjectMsg toDto(Project)
+}
+interface "IMapTask" as dev.fizlrock.todo.domain.mapper.IMapTask {
+  + {abstract}TaskMsg toDto(Task)
+}
+class "IMapTaskImpl" as dev.fizlrock.todo.domain.mapper.IMapTaskImpl {
+  +TaskMsg toDto(Task)
+}
+interface "CrudRepository" as dev.fizlrock.todo.domain.ports.CrudRepository<T> {
+  + {abstract}void save(T)
+  + {abstract}void delete(T)
+}
+interface "IProjectRepository" as dev.fizlrock.todo.domain.ports.IProjectRepository {
+  + {abstract}Optional<Project> findByName(String)
+  + {abstract}Optional<Project> findById(UUID)
+  + {abstract}List<Project> findAll()
+}
+interface "ITodoService" as dev.fizlrock.todo.domain.ports.ITodoService {
+  + {abstract}ProjectMsg createProject(ProjectCreateRq)
+  + {abstract}ProjectMsg updateProject(ProjectUpdateRq)
+  + {abstract}ProjectMsg getProject(ProjectGetRq)
+  + {abstract}ProjectMsg deleteProject(ProjectDeleteRq)
+  + {abstract}ProjectListResp getAllProjects(ProjectFilterRq)
+  + {abstract}TaskListResp getTasksForProject(TasksInProjectRq)
+  + {abstract}TaskMsg getTask(TaskRq)
+  + {abstract}TaskMsg createTask(TaskCreateRq)
+  + {abstract}TaskMsg updateTask(TaskUpdateRq)
+  + {abstract}void deleteTask(TaskRq)
+  + {abstract}void deleteCompletedTasks(DeleteCompletedTasksRq)
+}
+class "TodoServiceImpl" as dev.fizlrock.todo.domain.service.TodoServiceImpl {
+  +ProjectMsg createProject(ProjectCreateRq)
+  +ProjectMsg updateProject(ProjectUpdateRq)
+  +ProjectMsg getProject(ProjectGetRq)
+  +ProjectMsg deleteProject(ProjectDeleteRq)
+  +ProjectListResp getAllProjects(ProjectFilterRq)
+  +TaskListResp getTasksForProject(TasksInProjectRq)
+  +TaskMsg getTask(TaskRq)
+  +TaskMsg createTask(TaskCreateRq)
+  +TaskMsg updateTask(TaskUpdateRq)
+  +void deleteTask(TaskRq)
+  +void deleteCompletedTasks(DeleteCompletedTasksRq)
+}
+interface "ProjectJPARepository" as dev.fizlrock.todo.repository.ProjectJPARepository {
+  + {abstract}Optional<Project> findByName(String)
+}
+class "ProjectRepository" as dev.fizlrock.todo.repository.ProjectRepository {
+  +void save(Project)
+  +void delete(Project)
+  +Optional<Project> findByName(String)
+  +Optional<Project> findById(UUID)
+  +List<Project> findAll()
+}
+class "ControllerExceptionAdvice" as dev.fizlrock.todo.restapi.advice.ControllerExceptionAdvice {
+}
+class "WebConfig" as dev.fizlrock.todo.restapi.config.WebConfig {
+  +void addCorsMappings(CorsRegistry)
+}
+class "ProjectController" as dev.fizlrock.todo.restapi.controller.ProjectController {
+}
+class "TaskController" as dev.fizlrock.todo.restapi.controller.TaskController {
+}
+dev.fizlrock.todo.domain.dto.ProjectListResp --> dev.fizlrock.todo.domain.dto.ProjectMsg
+dev.fizlrock.todo.domain.dto.ProjectUpdateRq --> dev.fizlrock.todo.domain.dto.ProjectCreateRq
+dev.fizlrock.todo.domain.dto.TaskCreateRq --> dev.fizlrock.todo.domain.dto.TaskNewMsg
+dev.fizlrock.todo.domain.dto.TaskListResp --> dev.fizlrock.todo.domain.dto.TaskMsg
+dev.fizlrock.todo.domain.dto.TaskUpdateRq --> dev.fizlrock.todo.domain.dto.TaskNewMsg
+dev.fizlrock.todo.domain.entity.Project "0..1" o--> "0..*" dev.fizlrock.todo.domain.entity.Task
+dev.fizlrock.todo.domain.mapper.IMapProjectImpl .u.|> dev.fizlrock.todo.domain.mapper.IMapProject
+dev.fizlrock.todo.domain.mapper.IMapTaskImpl .u.|> dev.fizlrock.todo.domain.mapper.IMapTask
+dev.fizlrock.todo.domain.ports.IProjectRepository .u.|> dev.fizlrock.todo.domain.ports.CrudRepository
+dev.fizlrock.todo.domain.service.TodoServiceImpl .u.|> dev.fizlrock.todo.domain.ports.ITodoService
+dev.fizlrock.todo.domain.service.TodoServiceImpl --> dev.fizlrock.todo.domain.mapper.IMapProject
+dev.fizlrock.todo.domain.service.TodoServiceImpl --> dev.fizlrock.todo.domain.ports.IProjectRepository
+dev.fizlrock.todo.domain.service.TodoServiceImpl --> dev.fizlrock.todo.domain.mapper.IMapTask
+dev.fizlrock.todo.repository.ProjectRepository .u.|> dev.fizlrock.todo.domain.ports.IProjectRepository
+dev.fizlrock.todo.repository.ProjectRepository .u.|> dev.fizlrock.todo.domain.ports.CrudRepository
+dev.fizlrock.todo.repository.ProjectRepository --> dev.fizlrock.todo.repository.ProjectJPARepository
+dev.fizlrock.todo.restapi.controller.ProjectController --> dev.fizlrock.todo.domain.ports.ITodoService
+dev.fizlrock.todo.restapi.controller.TaskController --> dev.fizlrock.todo.domain.ports.ITodoService
+@enduml

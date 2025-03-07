@@ -1,0 +1,45 @@
+spring:
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/todolist
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  liquibase:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/todolist
+    user: ${DB_USER}
+    password: ${DB_PASSWORD}
+    change-log: "classpath:changelog.yaml"
+
+  output:
+    ansi:
+      enabled: always    
+
+logging:
+
+  pattern:
+      console: "%highlight(%-5level){ERROR=red, WARN=yellow, INFO=green, DEBUG=blue} %clr(%logger{36}){cyan} \n%msg%n\n\n"      
+  
+  level:
+      org.springframework.jdbc: TRACE
+      org.hibernate.SQL: DEBUG
+      org.hibernate.type: TRACE
+      
+  # com.fasterxml.jackson: TRACE
+  # org.springframework.boot.actuate: TRACE
+  # org.springframework.web: DEBUG
+  # org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
+
+
+
+springdoc:
+  api-docs:
+    enabled: true
+  default-produces-media-type: application/json 
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: mappings

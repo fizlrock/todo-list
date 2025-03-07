@@ -1,0 +1,80 @@
+
+
+
+
+plugins {
+    id 'java'
+    id 'io.spring.dependency-management' version "${springDependencyManagement}"
+    // id 'org.springframework.boot' version "${springBootVersion}"
+    id "io.freefair.lombok" version "8.12.1"
+    id "io.gitlab.plunts.plantuml" version "2.1.7"
+    // id 'spring-boot-devtools'
+}
+
+
+allprojects {
+    group = 'dev.fizlrock'
+    version = '1.0.0'
+
+    repositories {
+        mavenCentral()
+    }
+    
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'io.freefair.lombok'
+
+    dependencies {
+
+        implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+        annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+        implementation "org.springframework.modulith:spring-modulith-starter-core:${springModulithVersion}"
+        implementation "org.springframework.modulith:spring-modulith-core:${springModulithVersion}"
+        implementation "org.springframework.modulith:spring-modulith-docs:${springModulithVersion}"
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+        		mavenBom "org.springframework.modulith:spring-modulith-bom:${springModulithVersion}"
+        }
+    }
+
+    
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+
+
+classDiagrams {
+  // this server is the default, so skip this if you don't mind your diagrams being sent there
+  plantumlServer = 'https://www.plantuml.com/plantuml'
+
+  defaults {
+    // This project will not inherit defaults from the parent project.
+    // Consequently, we have to define some excludes again here (if we want).
+    // You can use this directive in diagram blocks so they don't include this defaults.
+    dontInheritDefaults()
+    // note("This class is abstract").topOf(classes().thatAreAbstract())
+    exclude classes().annotatedWith("lombok.Generated")
+    exclude methods().withName("builder")
+  }
+  diagram {
+    // Note how this exact configuration behaves differently depending on which project you put it
+    // This one only shows the classes actually defined here, while the parent shows also the ones of sibling projects
+    name "Visualise Package"
+    include packages().withName("dev.fizlrock")
+    exclude packages().withName("dev.fizlrock.university.todo.domain.dto")
+    exclude classes().outsideOfProject()
+    writeTo file('diagrams/full_package.puml')
+  }
+}
+
+
