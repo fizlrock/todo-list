@@ -82,6 +82,7 @@ public class TodoServiceImpl implements ITodoService {
 
     List<Project> projects = projectRepository.findAll();
 
+    // TODO переписать на query
     var resp =
         projects.stream()
             .filter(p -> rq.name() == null || p.getName().contains(rq.name()))
@@ -183,6 +184,7 @@ public class TodoServiceImpl implements ITodoService {
             .findById(project_id)
             .orElseThrow(() -> new IllegalArgumentException("Project id not found"));
 
+    // check n + 1
     project.getTasks().stream()
         .filter(t -> t.isCompleted() == true)
         .map(Task::getId)

@@ -25,11 +25,6 @@ logging:
       org.springframework.jdbc: TRACE
       org.hibernate.SQL: DEBUG
       org.hibernate.type: TRACE
-      
-  # com.fasterxml.jackson: TRACE
-  # org.springframework.boot.actuate: TRACE
-  # org.springframework.web: DEBUG
-  # org.springframework.web.filter.CommonsRequestLoggingFilter: DEBUG
 
 
 

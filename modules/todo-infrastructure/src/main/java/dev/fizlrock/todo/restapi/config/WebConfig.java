@@ -14,7 +14,7 @@ public class WebConfig implements WebFluxConfigurer {
 
     registry
         .addMapping("/**") // Указывает на все эндпоинты
-        .allowedOrigins("http://localhost:4200") // Разрешает запросы с любых источников
+        .allowedOrigins("http://107.172.142.23")
         .allowedMethods(
             "GET", "POST", "PUT", "DELETE", "OPTIONS") // Разрешает все основные HTTP методы
         .allowedHeaders("*") // Разрешает все заголовки
