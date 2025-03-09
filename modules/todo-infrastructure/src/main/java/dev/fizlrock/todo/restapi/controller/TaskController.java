@@ -1,14 +1,7 @@
 package dev.fizlrock.todo.restapi.controller;
 
-import dev.fizlrock.todo.domain.dto.DeleteCompletedTasksRq;
-import dev.fizlrock.todo.domain.dto.TaskCreateRq;
-import dev.fizlrock.todo.domain.dto.TaskListResp;
-import dev.fizlrock.todo.domain.dto.TaskMsg;
-import dev.fizlrock.todo.domain.dto.TaskNewMsg;
-import dev.fizlrock.todo.domain.dto.TaskRq;
-import dev.fizlrock.todo.domain.dto.TaskUpdateRq;
-import dev.fizlrock.todo.domain.dto.TasksInProjectRq;
 import dev.fizlrock.todo.domain.ports.ITodoService;
+import dev.fizlrock.todo.domain.service.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

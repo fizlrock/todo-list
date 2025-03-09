@@ -1,0 +1,76 @@
+@startuml
+!pragma useIntermediatePackages false
+
+class "DeleteCompletedTasksRq" as dev.fizlrock.todo.domain.service.dto.DeleteCompletedTasksRq {
+  +String projectId()
+}
+class "ProjectCreateRq" as dev.fizlrock.todo.domain.service.dto.ProjectCreateRq {
+  +String name()
+  +String description()
+  +LocalDate startTime()
+  +LocalDate endTime()
+}
+class "ProjectDeleteRq" as dev.fizlrock.todo.domain.service.dto.ProjectDeleteRq {
+  +String projectId()
+}
+class "ProjectFilterRq" as dev.fizlrock.todo.domain.service.dto.ProjectFilterRq {
+  +Long skip()
+  +Long limit()
+  +String name()
+  +LocalDate start()
+  +LocalDate end()
+}
+class "ProjectGetRq" as dev.fizlrock.todo.domain.service.dto.ProjectGetRq {
+  +String projectId()
+}
+class "ProjectListResp" as dev.fizlrock.todo.domain.service.dto.ProjectListResp {
+  +List<ProjectMsg> projects()
+}
+class "ProjectMsg" as dev.fizlrock.todo.domain.service.dto.ProjectMsg {
+  +String id()
+  +String name()
+  +String description()
+  +LocalDate startDate()
+  +LocalDate endDate()
+}
+class "ProjectUpdateRq" as dev.fizlrock.todo.domain.service.dto.ProjectUpdateRq {
+  +String id()
+  +ProjectCreateRq project()
+}
+class "TaskCreateRq" as dev.fizlrock.todo.domain.service.dto.TaskCreateRq {
+  +String projectId()
+  +TaskNewMsg task()
+}
+class "TaskListResp" as dev.fizlrock.todo.domain.service.dto.TaskListResp {
+  +List<TaskMsg> tasks()
+}
+class "TaskMsg" as dev.fizlrock.todo.domain.service.dto.TaskMsg {
+  +String id()
+  +String name()
+  +boolean completed()
+  +LocalDate date()
+}
+class "TaskNewMsg" as dev.fizlrock.todo.domain.service.dto.TaskNewMsg {
+  +String name()
+  +String description()
+  +boolean completed()
+  +LocalDate date()
+}
+class "TaskRq" as dev.fizlrock.todo.domain.service.dto.TaskRq {
+  +String projectId()
+  +String taskId()
+}
+class "TaskUpdateRq" as dev.fizlrock.todo.domain.service.dto.TaskUpdateRq {
+  +String projectId()
+  +String taskId()
+  +TaskNewMsg task()
+}
+class "TasksInProjectRq" as dev.fizlrock.todo.domain.service.dto.TasksInProjectRq {
+  +String projectId()
+}
+dev.fizlrock.todo.domain.service.dto.ProjectListResp --> dev.fizlrock.todo.domain.service.dto.ProjectMsg
+dev.fizlrock.todo.domain.service.dto.ProjectUpdateRq --> dev.fizlrock.todo.domain.service.dto.ProjectCreateRq
+dev.fizlrock.todo.domain.service.dto.TaskCreateRq --> dev.fizlrock.todo.domain.service.dto.TaskNewMsg
+dev.fizlrock.todo.domain.service.dto.TaskListResp --> dev.fizlrock.todo.domain.service.dto.TaskMsg
+dev.fizlrock.todo.domain.service.dto.TaskUpdateRq --> dev.fizlrock.todo.domain.service.dto.TaskNewMsg
+@enduml

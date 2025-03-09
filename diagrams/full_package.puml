@@ -4,73 +4,6 @@
 class "App" as dev.fizlrock.todo.App {
   + {static}void main(String[])
 }
-class "DeleteCompletedTasksRq" as dev.fizlrock.todo.domain.dto.DeleteCompletedTasksRq {
-  +String projectId()
-}
-class "ProjectCreateRq" as dev.fizlrock.todo.domain.dto.ProjectCreateRq {
-  +String name()
-  +String description()
-  +LocalDate startTime()
-  +LocalDate endTime()
-}
-class "ProjectDeleteRq" as dev.fizlrock.todo.domain.dto.ProjectDeleteRq {
-  +String projectId()
-}
-class "ProjectFilterRq" as dev.fizlrock.todo.domain.dto.ProjectFilterRq {
-  +Long skip()
-  +Long limit()
-  +String name()
-  +LocalDate start()
-  +LocalDate end()
-}
-class "ProjectGetRq" as dev.fizlrock.todo.domain.dto.ProjectGetRq {
-  +String projectId()
-}
-class "ProjectListResp" as dev.fizlrock.todo.domain.dto.ProjectListResp {
-  +List<ProjectMsg> projects()
-}
-class "ProjectMsg" as dev.fizlrock.todo.domain.dto.ProjectMsg {
-  +String id()
-  +String name()
-  +String description()
-  +LocalDate startDate()
-  +LocalDate endDate()
-}
-class "ProjectUpdateRq" as dev.fizlrock.todo.domain.dto.ProjectUpdateRq {
-  +String id()
-  +ProjectCreateRq project()
-}
-class "TaskCreateRq" as dev.fizlrock.todo.domain.dto.TaskCreateRq {
-  +String projectId()
-  +TaskNewMsg task()
-}
-class "TaskListResp" as dev.fizlrock.todo.domain.dto.TaskListResp {
-  +List<TaskMsg> tasks()
-}
-class "TaskMsg" as dev.fizlrock.todo.domain.dto.TaskMsg {
-  +String id()
-  +String name()
-  +boolean completed()
-  +LocalDate date()
-}
-class "TaskNewMsg" as dev.fizlrock.todo.domain.dto.TaskNewMsg {
-  +String name()
-  +String description()
-  +boolean completed()
-  +LocalDate date()
-}
-class "TaskRq" as dev.fizlrock.todo.domain.dto.TaskRq {
-  +String projectId()
-  +String taskId()
-}
-class "TaskUpdateRq" as dev.fizlrock.todo.domain.dto.TaskUpdateRq {
-  +String projectId()
-  +String taskId()
-  +TaskNewMsg task()
-}
-class "TasksInProjectRq" as dev.fizlrock.todo.domain.dto.TasksInProjectRq {
-  +String projectId()
-}
 entity "Project" as dev.fizlrock.todo.domain.entity.Project {
   + {static}Project createNewProject(String, String, LocalDate, LocalDate)
   +UUID getId()
@@ -79,7 +12,8 @@ entity "Project" as dev.fizlrock.todo.domain.entity.Project {
   +LocalDate getStartDate()
   +LocalDate getEndDate()
   +Task addTask(String, LocalDate)
-  +Task removeTask(UUID)
+  +Task removeTaskById(UUID)
+  +Task getTaskById(UUID)
   +Task updateTask(UUID, String, LocalDate, boolean)
   +Collection<Task> getTasks()
   +void setName(String)
@@ -164,11 +98,6 @@ class "ProjectController" as dev.fizlrock.todo.restapi.controller.ProjectControl
 }
 class "TaskController" as dev.fizlrock.todo.restapi.controller.TaskController {
 }
-dev.fizlrock.todo.domain.dto.ProjectListResp --> dev.fizlrock.todo.domain.dto.ProjectMsg
-dev.fizlrock.todo.domain.dto.ProjectUpdateRq --> dev.fizlrock.todo.domain.dto.ProjectCreateRq
-dev.fizlrock.todo.domain.dto.TaskCreateRq --> dev.fizlrock.todo.domain.dto.TaskNewMsg
-dev.fizlrock.todo.domain.dto.TaskListResp --> dev.fizlrock.todo.domain.dto.TaskMsg
-dev.fizlrock.todo.domain.dto.TaskUpdateRq --> dev.fizlrock.todo.domain.dto.TaskNewMsg
 dev.fizlrock.todo.domain.entity.Project "0..1" o--> "0..*" dev.fizlrock.todo.domain.entity.Task
 dev.fizlrock.todo.domain.mapper.IMapProjectImpl .u.|> dev.fizlrock.todo.domain.mapper.IMapProject
 dev.fizlrock.todo.domain.mapper.IMapTaskImpl .u.|> dev.fizlrock.todo.domain.mapper.IMapTask

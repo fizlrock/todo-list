@@ -1,12 +1,14 @@
 package dev.fizlrock.todo.domain.service;
 
-import dev.fizlrock.todo.domain.dto.*;
 import dev.fizlrock.todo.domain.entity.Project;
 import dev.fizlrock.todo.domain.entity.Task;
+import dev.fizlrock.todo.domain.exception.ProjectNameDublicateException;
+import dev.fizlrock.todo.domain.exception.ProjectNotFoundException;
 import dev.fizlrock.todo.domain.mapper.IMapProject;
 import dev.fizlrock.todo.domain.mapper.IMapTask;
 import dev.fizlrock.todo.domain.ports.IProjectRepository;
 import dev.fizlrock.todo.domain.ports.ITodoService;
+import dev.fizlrock.todo.domain.service.dto.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,12 +24,23 @@ public class TodoServiceImpl implements ITodoService {
   @Autowired IMapProject projectMapper;
   @Autowired IMapTask taskMapper;
 
+  private Project getProjectById(String id) {
+
+    UUID projectId = UUID.fromString(id);
+
+    Project project =
+        projectRepository
+            .findById(projectId)
+            .orElseThrow(() -> new ProjectNotFoundException(projectId));
+    return project;
+  }
+
   @Override
   public ProjectMsg createProject(ProjectCreateRq rq) {
 
-    // TODO наверное стоит вынести эту логику в валидаторы
     Optional<Project> nameConflict = projectRepository.findByName(rq.name());
-    if (nameConflict.isPresent()) throw new IllegalStateException("project name dublicate");
+    if (nameConflict.isPresent())
+      throw new ProjectNameDublicateException(nameConflict.get().getName());
 
     var project =
         Project.createNewProject(rq.name(), rq.description(), rq.startTime(), rq.endTime());
@@ -40,11 +53,7 @@ public class TodoServiceImpl implements ITodoService {
   @Override
   public ProjectMsg updateProject(ProjectUpdateRq rq) {
 
-    Project p =
-        projectRepository
-            .findById(UUID.fromString(rq.id()))
-            .orElseThrow(() -> new IllegalArgumentException("Project id not found"));
-
+    Project p = getProjectById(rq.id());
     p.setName(rq.project().name());
     p.setDescription(rq.project().description());
     p.setDates(rq.project().startTime(), rq.project().endTime());
@@ -56,52 +65,30 @@ public class TodoServiceImpl implements ITodoService {
 
   @Override
   public ProjectMsg getProject(ProjectGetRq rq) {
-    Project p =
-        projectRepository
-            .findById(UUID.fromString(rq.projectId()))
-            .orElseThrow(() -> new IllegalArgumentException("Project id not found"));
+    Project p = getProjectById(rq.projectId());
     return projectMapper.toDto(p);
   }
 
   @Override
   public ProjectMsg deleteProject(ProjectDeleteRq rq) {
-    Project p =
-        projectRepository
-            .findById(UUID.fromString(rq.projectId()))
-            .orElseThrow(() -> new IllegalArgumentException("Project id not found"));
+    Project p = getProjectById(rq.projectId());
 
     projectRepository.delete(p);
+
     return projectMapper.toDto(p);
   }
 
   @Override
   public ProjectListResp getAllProjects(ProjectFilterRq rq) {
-    // TODO ой как плохо
-    // TODO ну хоть пагинацию сюда сделать
-    // TODO да и вообще CQRS тут нужен
+    List<ProjectMsg> projects =
+        projectRepository.findAll(rq).stream().map(projectMapper::toDto).toList();
 
-    List<Project> projects = projectRepository.findAll();
-
-    // TODO переписать на query
-    var resp =
-        projects.stream()
-            .filter(p -> rq.name() == null || p.getName().contains(rq.name()))
-            .filter(p -> rq.start() == null || p.getStartDate().isAfter(rq.start()))
-            .filter(p -> rq.end() == null || p.getEndDate().isBefore(rq.end()))
-            .skip(rq.skip())
-            .limit(rq.limit())
-            .map(projectMapper::toDto)
-            .toList();
-
-    return new ProjectListResp(resp);
+    return new ProjectListResp(projects);
   }
 
   @Override
   public TaskListResp getTasksForProject(TasksInProjectRq rq) {
-    Project p =
-        projectRepository
-            .findById(UUID.fromString(rq.projectId()))
-            .orElseThrow(() -> new IllegalArgumentException("Project id not found"));
+    Project p = getProjectById(rq.projectId());
     var tasks = p.getTasks().stream().map(taskMapper::toDto).toList();
 
     return new TaskListResp(tasks);
@@ -110,31 +97,18 @@ public class TodoServiceImpl implements ITodoService {
   @Override
   public TaskMsg getTask(TaskRq rq) {
 
-    var project_id = UUID.fromString(rq.projectId());
+    Project project = getProjectById(rq.projectId());
+
     var task_id = UUID.fromString(rq.taskId());
 
-    Project project =
-        projectRepository
-            .findById(project_id)
-            .orElseThrow(() -> new IllegalArgumentException("Project id not found"));
-
-    Task task =
-        project.getTasks().stream()
-            .filter(t -> t.getId().equals(task_id))
-            .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("Task id not found"));
+    var task = project.getTaskById(task_id);
 
     return taskMapper.toDto(task);
   }
 
   @Override
   public TaskMsg createTask(TaskCreateRq rq) {
-    var project_id = UUID.fromString(rq.projectId());
-
-    Project project =
-        projectRepository
-            .findById(project_id)
-            .orElseThrow(() -> new IllegalArgumentException("Project id not found"));
+    Project project = getProjectById(rq.projectId());
 
     var task = project.addTask(rq.task().name(), rq.task().date());
 
@@ -144,12 +118,9 @@ public class TodoServiceImpl implements ITodoService {
 
   @Override
   public TaskMsg updateTask(TaskUpdateRq rq) {
-    var project_id = UUID.fromString(rq.projectId());
 
-    Project project =
-        projectRepository
-            .findById(project_id)
-            .orElseThrow(() -> new IllegalArgumentException("Project id not found"));
+    Project project = getProjectById(rq.projectId());
+
     var task =
         project.updateTask(
             UUID.fromString(rq.taskId()),
@@ -164,30 +135,23 @@ public class TodoServiceImpl implements ITodoService {
 
   @Override
   public void deleteTask(TaskRq rq) {
-    var project_id = UUID.fromString(rq.projectId());
     var task_id = UUID.fromString(rq.taskId());
 
-    Project project =
-        projectRepository
-            .findById(project_id)
-            .orElseThrow(() -> new IllegalArgumentException("Project id not found"));
-    project.removeTask(task_id);
+    Project project = getProjectById(rq.projectId());
+
+    project.removeTaskById(task_id);
+
     projectRepository.save(project);
   }
 
   @Override
   public void deleteCompletedTasks(DeleteCompletedTasksRq rq) {
-    var project_id = UUID.fromString(rq.projectId());
-
-    Project project =
-        projectRepository
-            .findById(project_id)
-            .orElseThrow(() -> new IllegalArgumentException("Project id not found"));
+    Project project = getProjectById(rq.projectId());
 
     // check n + 1
     project.getTasks().stream()
         .filter(t -> t.isCompleted() == true)
         .map(Task::getId)
-        .forEach(id -> project.removeTask(id));
+        .forEach(id -> project.removeTaskById(id));
   }
 }

@@ -1,7 +1,7 @@
 package dev.fizlrock.todo.domain.mapper;
 
-import dev.fizlrock.todo.domain.dto.TaskMsg;
 import dev.fizlrock.todo.domain.entity.Task;
+import dev.fizlrock.todo.domain.service.dto.TaskMsg;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

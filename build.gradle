@@ -7,7 +7,7 @@ plugins {
     id 'io.spring.dependency-management' version "${springDependencyManagement}"
     // id 'org.springframework.boot' version "${springBootVersion}"
     id "io.freefair.lombok" version "8.12.1"
-    id "io.gitlab.plunts.plantuml" version "2.1.7"
+    id "io.gitlab.plunts.plantuml" version "2.2.0"
     // id 'spring-boot-devtools'
 }
 
@@ -54,27 +54,40 @@ subprojects {
 
 
 classDiagrams {
-  // this server is the default, so skip this if you don't mind your diagrams being sent there
-  plantumlServer = 'https://www.plantuml.com/plantuml'
+    plantumlServer = 'https://www.plantuml.com/plantuml'
 
-  defaults {
-    // This project will not inherit defaults from the parent project.
-    // Consequently, we have to define some excludes again here (if we want).
-    // You can use this directive in diagram blocks so they don't include this defaults.
-    dontInheritDefaults()
-    // note("This class is abstract").topOf(classes().thatAreAbstract())
-    exclude classes().annotatedWith("lombok.Generated")
-    exclude methods().withName("builder")
-  }
-  diagram {
-    // Note how this exact configuration behaves differently depending on which project you put it
-    // This one only shows the classes actually defined here, while the parent shows also the ones of sibling projects
-    name "Visualise Package"
-    include packages().withName("dev.fizlrock")
-    exclude packages().withName("dev.fizlrock.university.todo.domain.dto")
-    exclude classes().outsideOfProject()
-    writeTo file('diagrams/full_package.puml')
-  }
+    defaults {
+        dontInheritDefaults()
+        exclude classes().annotatedWith("lombok.Generated")
+        exclude classes().annotatedWith("javax.annotation.processing.Generated")
+        exclude methods().withName("builder")
+    }
+    diagram {
+        name "Visualise Package"
+        include packages().withName("dev.fizlrock")
+        exclude packages().withName("dev.fizlrock.todo.domain.service.dto")
+        exclude packages().withName("dev.fizlrock.todo.domain.exception")
+        writeTo file('diagrams/full_package.puml')
+        renderTo file('diagrams/full_package.svg')
+    }
+    diagram {
+        name "DTO diagram"
+        include packages().withName("dev.fizlrock.todo.domain.service.dto")
+        exclude classes().outsideOfProject()
+        writeTo file('diagrams/dtos.puml')
+        renderTo file('diagrams/dtos.svg')
+    }
+    diagram {
+        name "Exception diagram"
+        include packages().withName("dev.fizlrock.todo.domain.exception")
+        exclude classes().outsideOfProject()
+        writeTo file('diagrams/exceptions.puml')
+        renderTo file('diagrams/exceptions.svg')
+    }
+    // diagram {
+    //     name "DTO diagram"
+    //     writeTo file("diagrams/dtos.puml")
+    // }
 }
 
 

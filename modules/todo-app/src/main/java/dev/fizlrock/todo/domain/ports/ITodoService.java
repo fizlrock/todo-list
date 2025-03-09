@@ -1,6 +1,6 @@
 package dev.fizlrock.todo.domain.ports;
 
-import dev.fizlrock.todo.domain.dto.*;
+import dev.fizlrock.todo.domain.service.dto.*;
 
 public interface ITodoService {
   public ProjectMsg createProject(ProjectCreateRq rq);

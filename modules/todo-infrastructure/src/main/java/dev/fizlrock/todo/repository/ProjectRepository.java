@@ -2,6 +2,7 @@ package dev.fizlrock.todo.repository;
 
 import dev.fizlrock.todo.domain.entity.Project;
 import dev.fizlrock.todo.domain.ports.IProjectRepository;
+import dev.fizlrock.todo.domain.service.dto.ProjectFilterRq;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,5 +38,10 @@ public class ProjectRepository implements IProjectRepository {
   @Override
   public List<Project> findAll() {
     return jpa.findAll();
+  }
+
+  @Override
+  public List<Project> findAll(ProjectFilterRq rq) {
+    return this.findAll();
   }
 }

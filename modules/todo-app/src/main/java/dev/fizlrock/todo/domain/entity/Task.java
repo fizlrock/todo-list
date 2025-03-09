@@ -1,9 +1,11 @@
 package dev.fizlrock.todo.domain.entity;
 
+import dev.fizlrock.todo.domain.exception.IllegalTaskNameException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.ToString;
@@ -14,22 +16,17 @@ import lombok.ToString;
 @ToString
 public class Task {
 
-  protected Task() {}
-
   protected static Task createNew(UUID projectId, String name, LocalDate plannedFinish) {
     var t = new Task();
-
-    t.id = UUID.randomUUID();
-    t.projectId = projectId;
+    t.setId(UUID.randomUUID());
+    t.setProjectId(projectId);
     t.setName(name);
     t.setFinishDate(plannedFinish);
 
     return t;
   }
 
-  @Id
-  // @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+  @Id private UUID id;
 
   private UUID projectId;
 
@@ -37,6 +34,11 @@ public class Task {
 
   @Column(name = "completed")
   private boolean isCompleted = false;
+
+  @Column(name = "planned_end_date")
+  private LocalDate finishDate;
+
+  protected Task() {}
 
   public void makeCompleted() {
     isCompleted = true;
@@ -55,7 +57,13 @@ public class Task {
   }
 
   public void setName(String name) {
-    if (name.isBlank()) throw new IllegalArgumentException("Blank task name not permited");
+
+    Objects.requireNonNull(name, "Имя задачи не может быть null");
+    name = name.strip();
+    if (name.isBlank()) throw new IllegalTaskNameException(name, "Имя задачи не может быть пустым");
+
+    if (name.length() > 20)
+      throw new IllegalTaskNameException(name, "Длина имени не может быть больше 20 символов");
     this.name = name;
   }
 
@@ -63,6 +71,13 @@ public class Task {
     this.finishDate = finishDate;
   }
 
-  @Column(name = "planned_end_date")
-  private LocalDate finishDate;
+  private void setId(UUID id) {
+    Objects.requireNonNull(id, "ID задачи не может быть null");
+    this.id = id;
+  }
+
+  private void setProjectId(UUID projectId) {
+    Objects.requireNonNull(projectId, "ID проекта не может быть null");
+    this.projectId = projectId;
+  }
 }

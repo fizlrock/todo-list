@@ -1,7 +1,7 @@
 package dev.fizlrock.todo.restapi.controller;
 
-import dev.fizlrock.todo.domain.dto.*;
 import dev.fizlrock.todo.domain.ports.ITodoService;
+import dev.fizlrock.todo.domain.service.dto.*;
 import java.time.LocalDate;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

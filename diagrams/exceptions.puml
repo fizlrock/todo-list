@@ -1,0 +1,50 @@
+@startuml
+!pragma useIntermediatePackages false
+
+abstract class "EntityNotFoundException" as dev.fizlrock.todo.domain.exception.EntityNotFoundException {
+  +String getMessage()
+}
+abstract class "IllegalNameException" as dev.fizlrock.todo.domain.exception.IllegalNameException {
+  +String name
+  +String reason
+  __
+  +String getMessage()
+}
+class "IllegalProjectDescriptionException" as dev.fizlrock.todo.domain.exception.IllegalProjectDescriptionException {
+  +String description
+  +String reason
+  __
+  +String getMessage()
+}
+class "IllegalProjectNameException" as dev.fizlrock.todo.domain.exception.IllegalProjectNameException {
+}
+class "IllegalTaskNameException" as dev.fizlrock.todo.domain.exception.IllegalTaskNameException {
+}
+class "ProjectNameDublicateException" as dev.fizlrock.todo.domain.exception.ProjectNameDublicateException {
+}
+class "ProjectNotFoundException" as dev.fizlrock.todo.domain.exception.ProjectNotFoundException {
+  +String getMessage()
+}
+class "TaskNameDublicateException" as dev.fizlrock.todo.domain.exception.TaskNameDublicateException {
+}
+class "TaskNotFoundException" as dev.fizlrock.todo.domain.exception.TaskNotFoundException {
+  +String getMessage()
+}
+class "TimeConflictException" as dev.fizlrock.todo.domain.exception.TimeConflictException {
+  +String reason
+  __
+  +String getMessage()
+}
+abstract class "TodoAppException" as dev.fizlrock.todo.domain.exception.TodoAppException {
+}
+dev.fizlrock.todo.domain.exception.EntityNotFoundException -u-|> dev.fizlrock.todo.domain.exception.TodoAppException
+dev.fizlrock.todo.domain.exception.IllegalNameException -u-|> dev.fizlrock.todo.domain.exception.TodoAppException
+dev.fizlrock.todo.domain.exception.IllegalProjectDescriptionException -u-|> dev.fizlrock.todo.domain.exception.TodoAppException
+dev.fizlrock.todo.domain.exception.IllegalProjectNameException -u-|> dev.fizlrock.todo.domain.exception.IllegalNameException
+dev.fizlrock.todo.domain.exception.IllegalTaskNameException -u-|> dev.fizlrock.todo.domain.exception.IllegalNameException
+dev.fizlrock.todo.domain.exception.ProjectNameDublicateException -u-|> dev.fizlrock.todo.domain.exception.IllegalNameException
+dev.fizlrock.todo.domain.exception.ProjectNotFoundException -u-|> dev.fizlrock.todo.domain.exception.EntityNotFoundException
+dev.fizlrock.todo.domain.exception.TaskNameDublicateException -u-|> dev.fizlrock.todo.domain.exception.IllegalNameException
+dev.fizlrock.todo.domain.exception.TaskNotFoundException -u-|> dev.fizlrock.todo.domain.exception.EntityNotFoundException
+dev.fizlrock.todo.domain.exception.TimeConflictException -u-|> dev.fizlrock.todo.domain.exception.TodoAppException
+@enduml

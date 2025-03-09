@@ -1,5 +1,12 @@
 package dev.fizlrock.todo.domain.entity;
 
+import static java.util.Objects.requireNonNull;
+
+import dev.fizlrock.todo.domain.exception.IllegalProjectDescriptionException;
+import dev.fizlrock.todo.domain.exception.IllegalProjectNameException;
+import dev.fizlrock.todo.domain.exception.TaskNameDublicateException;
+import dev.fizlrock.todo.domain.exception.TaskNotFoundException;
+import dev.fizlrock.todo.domain.exception.TimeConflictException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -85,11 +92,18 @@ public class Project {
     return t;
   }
 
-  public Task removeTask(final UUID taskId) {
+  public Task removeTaskById(final UUID taskId) {
 
     final var t = tasks.remove(taskId);
-    if (t == null) throw new IllegalArgumentException("task id not found");
-    log.info("Удаление задачи: {}", t);
+    if (t == null) throw new TaskNotFoundException(taskId);
+    log.debug("Удаление задачи: {}", t);
+    return t;
+  }
+
+  public Task getTaskById(UUID taskId) {
+
+    final var t = tasks.get(taskId);
+    if (t == null) throw new TaskNotFoundException(taskId);
     return t;
   }
 
@@ -100,7 +114,8 @@ public class Project {
       final boolean state) {
 
     final var task = tasks.get(taskId);
-    if (task == null) throw new IllegalArgumentException("task id not found");
+
+    if (task == null) throw new TaskNotFoundException(taskId);
 
     if (!task.getName().equals(newTaskName)) validateTaskNewName(newTaskName);
 
@@ -117,22 +132,31 @@ public class Project {
   }
 
   public void setName(final String name) {
+    requireNonNull(name);
+
     if (name.equals(this.name)) return;
-    if (name.isBlank()) throw new IllegalArgumentException("blank name not permited");
-    if (name.strip().length() > 30) throw new IllegalArgumentException("to long name");
+    if (name.isBlank())
+      throw new IllegalProjectNameException(name, "Пустое имя проекта не допустимо");
+    if (name.strip().length() > 30)
+      throw new IllegalProjectNameException(name, "Имя проекта не может быть длинне 30 символов");
 
     this.name = name.strip();
   }
 
   public void setDescription(final String description) {
-    if (description.equals(this.description))
-      if (name.strip().length() > 300) throw new IllegalArgumentException("to long description");
+    requireNonNull(description);
+
+    if (description.equals(this.description)) return;
+
+    if (name.strip().length() > 100)
+      throw new IllegalProjectDescriptionException(
+          description, "Описание проекта может быть не более 100 символов");
     this.description = description.strip();
   }
 
   public void setDates(final LocalDate startDate, final LocalDate endDate) {
     if (startDate.isAfter(endDate))
-      throw new IllegalArgumentException("Date conflict. Project start after end");
+      throw new TimeConflictException("Date conflict. Project start after end");
 
     final var confilictTask =
         tasks.values().stream()
@@ -140,7 +164,9 @@ public class Project {
                 t -> t.getFinishDate().isBefore(startDate) || t.getFinishDate().isAfter(endDate))
             .findAny();
 
-    if (confilictTask.isPresent()) throw new IllegalArgumentException("Task finish time conflict");
+    if (confilictTask.isPresent())
+      throw new TimeConflictException(
+          "Существует задача, чей дедлайн не входит в новые сроки проведения проекта");
 
     this.startDate = startDate;
     this.endDate = endDate;
@@ -148,16 +174,17 @@ public class Project {
 
   private void validateTaskEndDate(final LocalDate date) {
     if (date.isBefore(this.startDate) || date.isAfter(this.endDate))
-      throw new IllegalArgumentException("Time conflict");
+      throw new TimeConflictException("Дедлайн задачи не входит в сроки проведения проекта");
   }
 
   private void validateTaskNewName(final String name) {
     final var taskWithSameName =
         tasks.values().stream().filter(t -> t.getName().equals(name)).findAny();
-    if (taskWithSameName.isPresent()) throw new IllegalArgumentException("task name dublicate");
+    if (taskWithSameName.isPresent()) throw new TaskNameDublicateException(name);
   }
 
   private void setId(final UUID id) {
+    requireNonNull(id);
     this.id = id;
   }
 }
