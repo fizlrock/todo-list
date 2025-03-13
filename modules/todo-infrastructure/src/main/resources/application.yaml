@@ -24,8 +24,12 @@ logging:
   level:
       org.springframework.jdbc: TRACE
       org.hibernate.SQL: DEBUG
-      org.hibernate.type: TRACE
+      # org.hibernate.type: TRACE
 
+
+todo:
+  repository:
+    impl: relational
 
 
 springdoc:

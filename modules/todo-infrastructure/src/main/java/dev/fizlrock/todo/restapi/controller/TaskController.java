@@ -2,7 +2,7 @@ package dev.fizlrock.todo.restapi.controller;
 
 import dev.fizlrock.todo.domain.ports.ITodoService;
 import dev.fizlrock.todo.domain.service.dto.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/projects/{projectId}/tasks")
+@RequiredArgsConstructor
 public class TaskController {
 
-  @Autowired ITodoService service;
+  private final ITodoService service;
 
   @GetMapping("/{taskId}")
   TaskMsg getTasks(

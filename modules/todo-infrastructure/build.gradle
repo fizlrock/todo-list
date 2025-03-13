@@ -12,31 +12,31 @@ dependencies {
 
     implementation "org.postgresql:postgresql:42.7.5"
     implementation "org.liquibase:liquibase-core:4.24.0"
-    implementation "org.yaml:snakeyaml:1.33"
 
-    implementation"org.springframework.boot:spring-boot-starter-actuator"
-    implementation 'org.springframework.modulith:spring-modulith-actuator'
+    // TODO Эти игрушки подключим позже 
+    // implementation "org.springframework.boot:spring-boot-starter-actuator"
+    // implementation 'org.springframework.modulith:spring-modulith-actuator'
 
+    // Веб-морда
+    implementation 'org.springframework.boot:spring-boot-starter-webflux' 
     implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
-    
-    // implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 
+
+    // Тут про данные
+    
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    testImplementation 'org.springframework.modulith:spring-modulith-starter-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
+    testImplementation 'org.springframework.modulith:spring-modulith-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 
-    implementation 'org.springframework.boot:spring-boot-starter-webflux' 
-    // implementation 'io.projectreactor.netty:reactor-netty' 
-
-    // implementation ('org.springframework.boot:spring-boot-starter-web') {
-    //     exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
-    // }
-
-    
-    // implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'com.h2database:h2'    
 }
 
-// Apply a specific Java toolchain to ease working on different environments.
+
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
