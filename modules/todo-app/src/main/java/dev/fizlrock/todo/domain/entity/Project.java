@@ -7,34 +7,43 @@ import dev.fizlrock.todo.domain.exception.IllegalProjectNameException;
 import dev.fizlrock.todo.domain.exception.TaskNameDublicateException;
 import dev.fizlrock.todo.domain.exception.TaskNotFoundException;
 import dev.fizlrock.todo.domain.exception.TimeConflictException;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MapKey;
-import jakarta.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 /** Project */
-@Entity
 @ToString
+@EqualsAndHashCode(callSuper = true)
 @Slf4j
-public class Project {
+public class Project extends BaseEntity<UUID> {
+
+  public static Project loadFromDatabase(
+      final UUID id,
+      final String name,
+      final String description,
+      final LocalDate start,
+      final LocalDate end,
+      Set<Task> tasks) {
+
+    Project project = new Project(id);
+    project.setName(name);
+    project.setDescription(description);
+    project.setDates(start, end);
+    tasks.forEach(t -> project.tasks.put(t.getId(), t));
+    return project;
+  }
 
   public static Project createNewProject(
       final String name, final String description, final LocalDate start, final LocalDate end) {
 
     final var project = new Project();
-
-    project.setId(UUID.randomUUID());
     project.setName(name);
     project.setDescription(description);
     project.setDates(start, end);
@@ -42,22 +51,20 @@ public class Project {
     return project;
   }
 
-  @OneToMany(
-      mappedBy = "projectId",
-      cascade = CascadeType.ALL,
-      fetch = FetchType.EAGER,
-      orphanRemoval = true) // Bidirectional:  Customer owns the relationship
-  @MapKey(name = "id") // Используем id задачи в качестве ключа
   Map<UUID, Task> tasks = new HashMap<>();
-
-  @Id
-  // @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
 
   private String name, description;
 
-  public UUID getId() {
-    return id;
+  private LocalDate startDate;
+
+  private LocalDate endDate;
+
+  private Project() {
+    super(UUID.randomUUID(), true);
+  }
+
+  private Project(UUID id) {
+    super(id, false);
   }
 
   public String getName() {
@@ -76,16 +83,8 @@ public class Project {
     return endDate;
   }
 
-  @Column(name = "start_time")
-  private LocalDate startDate;
-
-  @Column(name = "end_time")
-  private LocalDate endDate;
-
-  private Project() {}
-
   public Task addTask(final String taskName, final LocalDate plannedEndDate) {
-    final var t = Task.createNew(this.id, taskName, plannedEndDate);
+    final var t = Task.createNew(this.getId(), taskName, plannedEndDate);
     validateTaskNewName(taskName);
     validateTaskEndDate(plannedEndDate);
     tasks.put(t.getId(), t);
@@ -181,10 +180,5 @@ public class Project {
     final var taskWithSameName =
         tasks.values().stream().filter(t -> t.getName().equals(name)).findAny();
     if (taskWithSameName.isPresent()) throw new TaskNameDublicateException(name);
-  }
-
-  private void setId(final UUID id) {
-    requireNonNull(id);
-    this.id = id;
   }
 }

@@ -12,17 +12,18 @@ import dev.fizlrock.todo.domain.service.dto.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class TodoServiceImpl implements ITodoService {
 
-  @Autowired IProjectRepository projectRepository;
-  @Autowired IMapProject projectMapper;
-  @Autowired IMapTask taskMapper;
+  private final IProjectRepository projectRepository;
+  private final IMapProject projectMapper;
+  private final IMapTask taskMapper;
 
   private Project getProjectById(String id) {
 
