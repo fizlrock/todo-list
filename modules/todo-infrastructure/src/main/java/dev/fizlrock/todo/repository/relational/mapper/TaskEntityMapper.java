@@ -1,7 +1,7 @@
 package dev.fizlrock.todo.repository.relational.mapper;
 
 import dev.fizlrock.todo.domain.entity.Task;
-import dev.fizlrock.todo.repository.relational.entity.TaskEntity;
+import dev.fizlrock.todo.repository.relational.agregate.TaskEntity;
 import org.mapstruct.Mapper;
 
 /** TaskEntityMapper */
@@ -9,4 +9,8 @@ import org.mapstruct.Mapper;
 public interface TaskEntityMapper {
 
   TaskEntity toEntity(Task t);
+
+  default Task toDomain(TaskEntity t) {
+    return Task.loadFromDatabase(t.id(), t.projectId(), t.name(), t.finishDate(), t.completed());
+  }
 }

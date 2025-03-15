@@ -119,7 +119,9 @@ public class TodoServiceImpl implements ITodoService {
 
   @Override
   public TaskMsg updateTask(TaskUpdateRq rq) {
+    log.info("Запрос на обновление задачи: {}", rq);
 
+    log.info("Поиск проекта по id");
     Project project = getProjectById(rq.projectId());
 
     var task =
@@ -129,6 +131,7 @@ public class TodoServiceImpl implements ITodoService {
             rq.task().date(),
             rq.task().completed());
 
+    log.info("Сохранение проекта");
     projectRepository.save(project);
 
     return taskMapper.toDto(task);

@@ -47,17 +47,6 @@ public class DataJdbcTestConfig extends AbstractJdbcConfiguration {
     return new JdbcMappingContext();
   }
 
-  // @Bean
-  // public JdbcConverter jdbcConverter(
-  //     JdbcMappingContext mappingContext,
-  //     NamedParameterJdbcOperations operations,
-  //     RelationResolver relationResolver) {
-  //   DefaultJdbcTypeFactory jdbcTypeFactory =
-  //       new DefaultJdbcTypeFactory(operations.getJdbcOperations());
-  //   return new org.springframework.data.jdbc.core.convert.BasicJdbcConverter(
-  //       mappingContext, relationResolver, jdbcTypeFactory);
-  // }
-
   // Инициализация схемы
   @Bean
   public DataSourceInitializer dataSourceInitializer(DataSource dataSource) {

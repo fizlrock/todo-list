@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -20,9 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 
 /** Project */
 @ToString
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode()
 @Slf4j
-public class Project extends BaseEntity<UUID> {
+public class Project {
 
   public static Project loadFromDatabase(
       final UUID id,
@@ -30,13 +29,13 @@ public class Project extends BaseEntity<UUID> {
       final String description,
       final LocalDate start,
       final LocalDate end,
-      Set<Task> tasks) {
+      Map<UUID, Task> tasks) {
 
     Project project = new Project(id);
     project.setName(name);
     project.setDescription(description);
     project.setDates(start, end);
-    tasks.forEach(t -> project.tasks.put(t.getId(), t));
+    project.tasks = tasks;
     return project;
   }
 
@@ -51,7 +50,9 @@ public class Project extends BaseEntity<UUID> {
     return project;
   }
 
-  Map<UUID, Task> tasks = new HashMap<>();
+  private UUID id;
+
+  @EqualsAndHashCode.Exclude Map<UUID, Task> tasks = new HashMap<>();
 
   private String name, description;
 
@@ -60,11 +61,11 @@ public class Project extends BaseEntity<UUID> {
   private LocalDate endDate;
 
   private Project() {
-    super(UUID.randomUUID(), true);
+    id = UUID.randomUUID();
   }
 
   private Project(UUID id) {
-    super(id, false);
+    this.id = id;
   }
 
   public String getName() {
@@ -169,6 +170,10 @@ public class Project extends BaseEntity<UUID> {
 
     this.startDate = startDate;
     this.endDate = endDate;
+  }
+
+  public UUID getId() {
+    return id;
   }
 
   private void validateTaskEndDate(final LocalDate date) {

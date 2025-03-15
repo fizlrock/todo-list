@@ -3,6 +3,7 @@
 
 
 plugins {
+
     id 'java'
     id 'io.spring.dependency-management' version "${springDependencyManagement}"
     // id 'org.springframework.boot' version "${springBootVersion}"
@@ -28,6 +29,7 @@ subprojects {
     apply plugin: 'io.freefair.lombok'
 
     dependencies {
+        implementation 'org.springframework:spring-context'
 
         implementation "org.mapstruct:mapstruct:${mapstructVersion}"
         annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
@@ -35,6 +37,11 @@ subprojects {
         implementation "org.springframework.modulith:spring-modulith-starter-core:${springModulithVersion}"
         implementation "org.springframework.modulith:spring-modulith-core:${springModulithVersion}"
         implementation "org.springframework.modulith:spring-modulith-docs:${springModulithVersion}"
+
+
+        testImplementation 'org.springframework.modulith:spring-modulith-starter-test'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        
     }
 
     dependencyManagement {
@@ -43,11 +50,13 @@ subprojects {
         		mavenBom "org.springframework.modulith:spring-modulith-bom:${springModulithVersion}"
         }
     }
-
-    
-
     test {
         useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed" // Показывать события тестов
+            showStandardStreams = true // Показывать вывод System.out/System.err
+            exceptionFormat "full" // Полные stack traces для ошибок
+        }
     }
 }
 

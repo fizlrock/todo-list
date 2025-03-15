@@ -4,21 +4,24 @@ import dev.fizlrock.todo.domain.exception.IllegalTaskNameException;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
 /** Task */
 @Getter
+@EqualsAndHashCode
 @ToString
-public class Task extends BaseEntity<UUID> {
+public class Task {
 
   public static Task loadFromDatabase(
-      UUID taskId, UUID projectId, String name, LocalDate plannedFinish) {
+      UUID taskId, UUID projectId, String name, LocalDate plannedFinish, boolean completed) {
 
     Task task = new Task(taskId);
     task.setProjectId(projectId);
     task.setName(name);
     task.setFinishDate(plannedFinish);
+    task.setCompleted(completed);
     return task;
   }
 
@@ -31,35 +34,36 @@ public class Task extends BaseEntity<UUID> {
     return t;
   }
 
+  private UUID id;
   private UUID projectId;
 
   private String name;
 
-  private boolean isCompleted = false;
+  private boolean completed = false;
   private LocalDate finishDate;
 
   protected Task() {
-    super(UUID.randomUUID(), true);
+    this.id = UUID.randomUUID();
   }
 
   private Task(UUID id) {
-    super(id, false);
+    this.id = id;
   }
 
   public void makeCompleted() {
-    isCompleted = true;
+    completed = true;
   }
 
   public void makeUncompleted() {
-    isCompleted = false;
+    completed = false;
   }
 
   public void setCompleted(boolean isCompleted) {
-    this.isCompleted = isCompleted;
+    this.completed = isCompleted;
   }
 
   public boolean isCompleted() {
-    return isCompleted;
+    return completed;
   }
 
   public void setName(String name) {

@@ -7,11 +7,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 /** ProjectRepository */
-public interface IProjectRepository extends CrudRepository<Project> {
+public interface IProjectRepository {
 
   Optional<Project> findByName(String name);
 
   Optional<Project> findById(UUID fromString);
+
+  Project save(Project p);
+
+  void delete(Project p);
 
   List<Project> findAll();
 

@@ -1,5 +1,10 @@
 spring:
 
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/todolist
+
   datasource:
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/todolist
     username: ${DB_USER}
@@ -19,17 +24,20 @@ spring:
 logging:
 
   pattern:
-      console: "%highlight(%-5level){ERROR=red, WARN=yellow, INFO=green, DEBUG=blue} %clr(%logger{36}){cyan} \n%msg%n\n\n"      
+      console: "%highlight(%-5level){ERROR=red, WARN=yellow, INFO=green, DEBUG=blue} %clr(%logger{60}){cyan} \n%msg%n\n\n"      
   
   level:
       org.springframework.jdbc: TRACE
       org.hibernate.SQL: DEBUG
-      # org.hibernate.type: TRACE
 
+      org.springframework.data.mongodb: TRACE
+      # org: TRACE
+
+      # org.springframework.boot.autoconfigure: TRACE
 
 todo:
   repository:
-    impl: relational
+    impl: mongo
 
 
 springdoc:

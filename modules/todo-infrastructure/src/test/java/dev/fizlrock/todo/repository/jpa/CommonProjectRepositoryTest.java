@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.fizlrock.todo.domain.entity.Project;
 import dev.fizlrock.todo.domain.ports.IProjectRepository;
 import java.time.LocalDate;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,7 @@ public class CommonProjectRepositoryTest {
   }
 
   @Test
-  void saveProjectTest() {
+  void saveNewProjectTest() {
     Project p =
         Project.createNewProject(
             "name", "description", LocalDate.now(), LocalDate.now().plusDays(10));
@@ -47,7 +48,35 @@ public class CommonProjectRepositoryTest {
 
     var loaded = repository.findById(p.getId());
     assertTrue(loaded.isPresent());
+    var actual = loaded.get();
 
-    assertEquals(p, loaded.get());
+    System.out.println("Expected: " + p);
+    System.out.println("Actual: " + actual);
+
+    assertTrue(p.equals(actual));
+  }
+
+  @Test
+  void findByNotExistingID() {
+    var result = repository.findById(UUID.randomUUID());
+
+    assertTrue(result.isEmpty());
+  }
+
+  @Test
+  void saveProjectWithTasks() {
+    Project project =
+        Project.createNewProject(
+            "New project", "description", LocalDate.now(), LocalDate.now().plusYears(1));
+
+    project.addTask("first task", LocalDate.now().plusDays(10));
+    project.addTask("second task", LocalDate.now().plusDays(10));
+
+    repository.save(project);
+
+    Project loadedProject = repository.findById(project.getId()).get();
+
+    assertEquals(2, loadedProject.getTasks().size());
+    assertEquals(project, loadedProject);
   }
 }
