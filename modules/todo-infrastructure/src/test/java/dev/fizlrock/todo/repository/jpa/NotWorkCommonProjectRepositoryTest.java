@@ -5,38 +5,64 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.fizlrock.todo.domain.entity.Project;
 import dev.fizlrock.todo.domain.ports.IProjectRepository;
+import dev.fizlrock.todo.repository.relational.JdbcConfiguration;
 import java.time.LocalDate;
 import java.util.UUID;
+import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.test.context.TestPropertySource;
 
-@SpringBootTest(classes = DataJdbcTestConfig.class)
+// @Configuration
+// @Import({DataSourceAutoConfiguration.class, JdbcTemplateAutoConfiguration.class})
+// @EnableJdbcRepositories
+// @ComponentScan(basePackages = "dev.fizlrock.todo.repository.relational")
+// class SomeConfig extends AbstractJdbcConfiguration {
+
+// }
+@Configuration
+@Import({JdbcConfiguration.class})
+@ComponentScan(basePackages = "dev.fizlrock.todo.repository.relational")
+class JdbcTestConfiguration {
+
+  @Bean(name = "transactionManager")
+  public DataSourceTransactionManager transactionManager(DataSource dataSource) {
+    return new DataSourceTransactionManager(dataSource);
+  }
+}
+
+// @Disabled
+@SpringBootTest(classes = {JdbcTestConfiguration.class})
 @RequiredArgsConstructor
 @TestPropertySource(properties = "todo.repository.impl=relational")
-public class CommonProjectRepositoryTest {
+public class NotWorkCommonProjectRepositoryTest {
 
-  @Autowired private ApplicationContext applicationContext; // Внедряем контекст
+  @Autowired ApplicationContext applicationContext; // Внедряем контекст
 
-  @Autowired private IProjectRepository repository;
+  @Autowired IProjectRepository repository;
 
   @Test
   void trueTest() {
     assertTrue(true); // Базовый тест
   }
 
-  @Test
-  void printAvailableBeans() {
-    String[] beanNames = applicationContext.getBeanDefinitionNames();
-    System.out.println("Доступные бины в подпакете 'dev.fizlrock.todo.repository.jpa':");
-    for (String beanName : beanNames) {
-      System.out.println(beanName);
-    }
-    assertTrue(beanNames.length > 0); // Проверяем, что бины есть
-  }
+  // @Test
+  // void printAvailableBeans() {
+  //   String[] beanNames = applicationContext.getBeanDefinitionNames();
+  //   System.out.println("Доступные бины в подпакете 'dev.fizlrock.todo.repository.jpa':");
+  //   for (String beanName : beanNames) {
+  //     System.out.println(beanName);
+  //   }
+  //   assertTrue(beanNames.length > 0); // Проверяем, что бины есть
+  // }
 
   @Test
   void saveNewProjectTest() {

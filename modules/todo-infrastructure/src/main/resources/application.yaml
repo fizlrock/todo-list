@@ -31,13 +31,13 @@ logging:
       org.hibernate.SQL: DEBUG
 
       org.springframework.data.mongodb: TRACE
-      # org: TRACE
+      org: TRACE
 
       # org.springframework.boot.autoconfigure: TRACE
 
 todo:
   repository:
-    impl: mongo
+    impl: relational
 
 
 springdoc:

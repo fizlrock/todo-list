@@ -1,0 +1,224 @@
+> Task :todo-app:generateEffectiveLombokConfig UP-TO-DATE
+> Task :todo-app:compileJava UP-TO-DATE
+> Task :todo-infrastructure:generateEffectiveLombokConfig UP-TO-DATE
+> Task :todo-infrastructure:compileJava UP-TO-DATE
+> Task :todo-infrastructure:processResources UP-TO-DATE
+> Task :todo-infrastructure:classes UP-TO-DATE
+> Task :todo-infrastructure:jar UP-TO-DATE
+> Task :todo-infrastructure:assemble UP-TO-DATE
+> Task :todo-app:processResources NO-SOURCE
+> Task :todo-app:classes UP-TO-DATE
+> Task :todo-app:jar UP-TO-DATE
+> Task :todo-infrastructure:generateTestEffectiveLombokConfig UP-TO-DATE
+> Task :todo-infrastructure:compileTestJava
+> Task :todo-infrastructure:processTestResources UP-TO-DATE
+> Task :todo-infrastructure:testClasses
+
+> Task :todo-infrastructure:test
+
+NotWorkCommonProjectRepositoryTest STANDARD_OUT
+
+      .   ____          _            __ _ _
+     /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+    ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+     \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+      '  |____| .__|_| |_|_| |_\__, | / / / /
+     =========|_|==============|___/=/_/_/_/
+
+     :: Spring Boot ::                (v3.3.1)
+
+    INFO  d.f.todo.repository.jpa.NotWorkCommonProjectRepositoryTest 
+    Starting NotWorkCommonProjectRepositoryTest using Java 21.0.6 with PID 623400 (started by fizlrock in /home/fizlrock/code2025/java/university-web/backend/modules/todo-infrastructure)
+
+
+    INFO  d.f.todo.repository.jpa.NotWorkCommonProjectRepositoryTest 
+    No active profile set, falling back to 1 default profile: "default"
+
+
+    INFO  o.s.data.repository.config.RepositoryConfigurationDelegate 
+    Multiple Spring Data modules found, entering strict repository configuration mode
+
+
+    INFO  o.s.data.repository.config.RepositoryConfigurationDelegate 
+    Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+
+
+    INFO  o.s.data.repository.config.RepositoryConfigurationDelegate 
+    Finished Spring Data repository scanning in 130 ms. Found 1 JDBC repository interface.
+
+
+    INFO  o.s.data.repository.config.RepositoryConfigurationDelegate 
+    Multiple Spring Data modules found, entering strict repository configuration mode
+
+
+    INFO  o.s.data.repository.config.RepositoryConfigurationDelegate 
+    Bootstrapping Spring Data JDBC repositories in DEFAULT mode.
+
+
+    INFO  o.s.data.repository.config.RepositoryConfigurationDelegate 
+    Finished Spring Data repository scanning in 2 ms. Found 0 JDBC repository interfaces.
+
+
+    INFO  com.zaxxer.hikari.HikariDataSource 
+    HikariPool-1 - Starting...
+
+
+    INFO  com.zaxxer.hikari.pool.HikariPool 
+    HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:40ea128b-82ed-4c6c-9970-a17e41ad997d user=SA
+
+
+    INFO  com.zaxxer.hikari.HikariDataSource 
+    HikariPool-1 - Start completed.
+
+
+    INFO  liquibase.database 
+    Set default schema name to PUBLIC
+
+
+    INFO  liquibase.changelog 
+    Creating database history table with name: PUBLIC.DATABASECHANGELOG
+
+
+    INFO  liquibase.changelog 
+    Reading from PUBLIC.DATABASECHANGELOG
+
+
+    INFO  liquibase.lockservice 
+    Successfully acquired change log lock
+
+
+    INFO  liquibase.command 
+    Using deploymentId: 2091840752
+
+
+    INFO  liquibase.changelog 
+    Reading from PUBLIC.DATABASECHANGELOG
+
+
+    Running Changeset: changelog.yaml::1::fizlrock
+    INFO  liquibase.changelog 
+    ChangeSet changelog.yaml::1::fizlrock ran successfully in 0ms
+
+
+    Running Changeset: changelog.yaml::2::fizlrock
+    INFO  liquibase.changelog 
+    Table project created
+
+
+    INFO  liquibase.changelog 
+    ChangeSet changelog.yaml::2::fizlrock ran successfully in 14ms
+
+
+    Running Changeset: changelog.yaml::3::fizlrock
+    INFO  liquibase.changelog 
+    Column project.id dropped
+
+
+    INFO  liquibase.changelog 
+    Columns id(uuid) added to project
+
+
+    INFO  liquibase.changelog 
+    ChangeSet changelog.yaml::3::fizlrock ran successfully in 13ms
+
+
+    Running Changeset: changelog.yaml::4::fizlrock
+    INFO  liquibase.changelog 
+    Table task created
+
+
+    INFO  liquibase.changelog 
+    Foreign key constraint added to task (project_id)
+
+
+    INFO  liquibase.changelog 
+    ChangeSet changelog.yaml::4::fizlrock ran successfully in 8ms
+
+
+    Running Changeset: changelog.yaml::5::fizlrock
+    INFO  liquibase.changelog 
+    Column task.description dropped
+
+
+    INFO  liquibase.changelog 
+    ChangeSet changelog.yaml::5::fizlrock ran successfully in 5ms
+
+
+    INFO  liquibase.util 
+    UPDATE SUMMARY
+
+
+    INFO  liquibase.util 
+    Run:                          5
+
+
+    INFO  liquibase.util 
+    Previously run:               0
+
+
+    INFO  liquibase.util 
+    Filtered out:                 0
+
+
+    INFO  liquibase.util 
+    -------------------------------
+
+
+    INFO  liquibase.util 
+    Total change sets:            5
+
+
+    INFO  liquibase.util 
+    Update summary generated
+
+
+    INFO  liquibase.command 
+    Update command completed successfully.
+
+
+    Liquibase: Update has been successful. Rows affected: 5
+    INFO  liquibase.lockservice 
+    Successfully released change log lock
+
+
+    INFO  liquibase.command 
+    Command execution complete
+
+
+    INFO  d.f.todo.repository.jpa.NotWorkCommonProjectRepositoryTest 
+    Started NotWorkCommonProjectRepositoryTest in 1.886 seconds (process running for 2.759)
+
+
+
+NotWorkCommonProjectRepositoryTest > trueTest() STANDARD_ERROR
+    WARNING: A Java agent has been loaded dynamically (/home/fizlrock/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.14.17/e3c251a39dc90badaf71c83427ba46840f219d8d/byte-buddy-agent-1.14.17.jar)
+    WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+    WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+    WARNING: Dynamic loading of agents will be disallowed by default in a future release
+
+INFO  com.zaxxer.hikari.HikariDataSource 
+HikariPool-1 - Shutdown initiated...
+
+
+INFO  com.zaxxer.hikari.HikariDataSource 
+HikariPool-1 - Shutdown completed.
+
+
+
+> Task :todo-infrastructure:test
+
+NotWorkCommonProjectRepositoryTest > trueTest() PASSED
+
+> Task :todo-infrastructure:check
+> Task :todo-infrastructure:build
+
+[Incubating] Problems report is available at: file:///home/fizlrock/code2025/java/university-web/backend/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.12/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 4s
+11 actionable tasks: 2 executed, 9 up-to-date
