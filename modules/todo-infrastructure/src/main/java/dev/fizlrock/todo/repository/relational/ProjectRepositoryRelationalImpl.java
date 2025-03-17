@@ -60,7 +60,9 @@ public class ProjectRepositoryRelationalImpl implements IProjectRepository {
 
   @Override
   public List<Project> findAll(ProjectFilterRq rq) {
-    return repository.findByFilter(rq.skip(), rq.limit(), rq.name(), rq.start(), rq.end()).stream()
+    return repository
+        .findByFilter(rq.skip(), rq.limit(), rq.name().get(), rq.start().get(), rq.end().get())
+        .stream()
         .map(mapper::toDomain)
         .toList();
   }

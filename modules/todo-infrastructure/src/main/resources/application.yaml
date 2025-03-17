@@ -27,17 +27,13 @@ logging:
       console: "%highlight(%-5level){ERROR=red, WARN=yellow, INFO=green, DEBUG=blue} %clr(%logger{60}){cyan} \n%msg%n\n\n"      
   
   level:
-      org.springframework.jdbc: TRACE
-      org.hibernate.SQL: DEBUG
-
-      org.springframework.data.mongodb: TRACE
-      org: TRACE
+      root: info
 
       # org.springframework.boot.autoconfigure: TRACE
 
 todo:
   repository:
-    impl: relational
+    impl: mongo
 
 
 springdoc:
