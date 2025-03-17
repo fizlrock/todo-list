@@ -15,6 +15,8 @@ import org.springframework.stereotype.Repository;
 public interface ProjectRepositoryMongoImpl
     extends IProjectRepository, MongoRepository<Project, UUID> {
 
+  // public record ProjectFilterRq(Long skip, Long limit, String name, LocalDate start, LocalDate
+  // end) {}
   default List<Project> findAll(ProjectFilterRq rq) {
     return null;
   }

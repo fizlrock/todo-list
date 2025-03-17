@@ -16,6 +16,8 @@ import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceCreator;
 
 /** Project */
 @ToString
@@ -23,18 +25,21 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Project {
 
+  @PersistenceCreator
   public static Project loadFromDatabase(
       final UUID id,
       final String name,
       final String description,
-      final LocalDate start,
-      final LocalDate end,
+      final LocalDate startDate,
+      final LocalDate endDate,
       Map<UUID, Task> tasks) {
+
+    log.trace("used factory method <loadFromDatabase> for create Project");
 
     Project project = new Project(id);
     project.setName(name);
     project.setDescription(description);
-    project.setDates(start, end);
+    project.setDates(startDate, endDate);
     project.tasks = tasks;
     return project;
   }
@@ -42,6 +47,7 @@ public class Project {
   public static Project createNewProject(
       final String name, final String description, final LocalDate start, final LocalDate end) {
 
+    log.trace("used factory method <createNewProject> for create Project");
     final var project = new Project();
     project.setName(name);
     project.setDescription(description);
@@ -50,7 +56,7 @@ public class Project {
     return project;
   }
 
-  private UUID id;
+  @Id private UUID id;
 
   @EqualsAndHashCode.Exclude Map<UUID, Task> tasks = new HashMap<>();
 
@@ -61,10 +67,12 @@ public class Project {
   private LocalDate endDate;
 
   private Project() {
+    log.trace("used private constructor");
     id = UUID.randomUUID();
   }
 
   private Project(UUID id) {
+    log.trace("used private constructor with id");
     this.id = id;
   }
 

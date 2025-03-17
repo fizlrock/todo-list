@@ -7,6 +7,7 @@ import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.data.annotation.PersistenceCreator;
 
 /** Task */
 @Getter
@@ -14,13 +15,14 @@ import lombok.ToString;
 @ToString
 public class Task {
 
+  @PersistenceCreator
   public static Task loadFromDatabase(
-      UUID taskId, UUID projectId, String name, LocalDate plannedFinish, boolean completed) {
+      UUID id, UUID projectId, String name, LocalDate finishDate, boolean completed) {
 
-    Task task = new Task(taskId);
+    Task task = new Task(id);
     task.setProjectId(projectId);
     task.setName(name);
-    task.setFinishDate(plannedFinish);
+    task.setFinishDate(finishDate);
     task.setCompleted(completed);
     return task;
   }
