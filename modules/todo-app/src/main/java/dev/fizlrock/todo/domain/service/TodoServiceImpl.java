@@ -1,7 +1,6 @@
 package dev.fizlrock.todo.domain.service;
 
 import dev.fizlrock.todo.domain.entity.Project;
-import dev.fizlrock.todo.domain.entity.Task;
 import dev.fizlrock.todo.domain.exception.ProjectNameDublicateException;
 import dev.fizlrock.todo.domain.exception.ProjectNotFoundException;
 import dev.fizlrock.todo.domain.mapper.IMapProject;
@@ -151,11 +150,16 @@ public class TodoServiceImpl implements ITodoService {
   @Override
   public void deleteCompletedTasks(DeleteCompletedTasksRq rq) {
     Project project = getProjectById(rq.projectId());
+    project.deleteCompletedTasks();
+    projectRepository.save(project);
+  }
 
-    // check n + 1
-    project.getTasks().stream()
-        .filter(t -> t.isCompleted() == true)
-        .map(Task::getId)
-        .forEach(id -> project.removeTaskById(id));
+  @Override
+  public ProjectCountUncompledTasksResp countUncompletedTasks(ProjectCountUncompledTasksRq rq) {
+    Project project = getProjectById(rq.projectId());
+
+    long count = project.countUncompletedTasks();
+
+    return new ProjectCountUncompledTasksResp(count);
   }
 }

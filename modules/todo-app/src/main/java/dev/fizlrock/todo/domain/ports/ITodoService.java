@@ -24,4 +24,6 @@ public interface ITodoService {
   public void deleteTask(TaskRq rq);
 
   public void deleteCompletedTasks(DeleteCompletedTasksRq rq);
+
+  public ProjectCountUncompledTasksResp countUncompletedTasks(ProjectCountUncompledTasksRq rq);
 }

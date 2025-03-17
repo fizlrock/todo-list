@@ -46,6 +46,13 @@ public class ProjectController {
     return service.getProject(new ProjectGetRq(id));
   }
 
+  @GetMapping("/{projectId}/uncompletedTasks")
+  ProjectCountUncompledTasksResp getUncomletedTasks(@PathVariable("projectId") String id) {
+    var rq = new ProjectCountUncompledTasksRq(id);
+
+    return service.countUncompletedTasks(rq);
+  }
+
   @GetMapping("/all")
   ProjectListResp getAllProjects(
       @RequestParam(name = "skip", required = true) Long skip,

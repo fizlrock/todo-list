@@ -68,6 +68,10 @@ public class Task {
     return completed;
   }
 
+  public boolean isUncompleted() {
+    return !completed;
+  }
+
   public void setName(String name) {
 
     Objects.requireNonNull(name, "Имя задачи не может быть null");

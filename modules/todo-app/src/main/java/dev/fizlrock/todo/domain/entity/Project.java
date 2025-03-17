@@ -180,6 +180,18 @@ public class Project {
     this.endDate = endDate;
   }
 
+  public void deleteCompletedTasks() {
+
+    this.getTasks().stream()
+        .filter(Task::isCompleted)
+        .map(Task::getId)
+        .forEach(id -> this.removeTaskById(id));
+  }
+
+  public long countUncompletedTasks() {
+    return getTasks().stream().filter(Task::isUncompleted).count();
+  }
+
   public UUID getId() {
     return id;
   }
@@ -191,7 +203,7 @@ public class Project {
 
   private void validateTaskNewName(final String name) {
     final var taskWithSameName =
-        tasks.values().stream().filter(t -> t.getName().equals(name)).findAny();
+        getTasks().stream().filter(t -> t.getName().equals(name)).findAny();
     if (taskWithSameName.isPresent()) throw new TaskNameDublicateException(name);
   }
 }
